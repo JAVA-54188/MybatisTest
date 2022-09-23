@@ -2,6 +2,8 @@ import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
+import org.mybatis.example.Country;
+import org.mybatis.example.CountryMapper;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -21,9 +23,12 @@ public class Test {
 
         String code = "AFG";
         try (SqlSession session = sqlSessionFactory.openSession()) {
-            Country country = (Country) session.selectOne("org.mybatis.example.CountryMapper.selectCountryByCode", code);
-            System.out.println(country.toString());
+//            Country country = session.selectOne("org.mybatis.example.CountryMapper.selectCountryByCode", code);
+//            System.out.println(country.toString());
 //            session.getMapper(CountryMapper.class);
+            CountryMapper mapper = session.getMapper(CountryMapper.class);
+            Country country1 = mapper.selectCountryByCode(code);
+            System.out.println(country1);
         }
     }
 }

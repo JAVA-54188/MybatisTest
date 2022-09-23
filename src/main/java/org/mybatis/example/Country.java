@@ -1,3 +1,5 @@
+package org.mybatis.example;
+
 public class Country {
     private String code;
     private String name;
@@ -9,7 +11,7 @@ public class Country {
 
     @Override
     public String toString() {
-        return "Country{" +
+        return "org.mybatis.example.Country{" +
                 "code='" + code + '\'' +
                 ", name='" + name + '\'' +
                 ", continent='" + continent + '\'' +
