@@ -5,6 +5,6 @@
 <mapper namespace="practice.mapper.AnswersMapper">
     <!-- 1. 查询" 01 “课程比” 02 "课程成绩高的学生的信息及课程分数-->
     <select id="1" resultType="org.mybatis.example.Country">
-        select student.*, from
+        select stu.* ,sc.score from student as stu, sc where stu.sid = sc.sid;
     </select>
 </mapper>
