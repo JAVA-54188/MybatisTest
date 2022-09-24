@@ -1,4 +1,4 @@
-package org.mybatis.practice;
+package practice;
 
 public class Course {
     private String cId;

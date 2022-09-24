@@ -1,4 +1,4 @@
-package org.mybatis.practice;
+package practice;
 
 import java.util.Date;
 
