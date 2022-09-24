@@ -1,4 +1,4 @@
-package practice;
+package practice.po;
 
 public class SC {
     private String sId;

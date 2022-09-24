@@ -1,4 +1,4 @@
-package practice;
+package practice.po;
 
 public class Course {
     private String cId;
