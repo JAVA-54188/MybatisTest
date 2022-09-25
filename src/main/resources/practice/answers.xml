@@ -3,16 +3,58 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="practice.mapper.AnswersMapper">
-    <!-- 1. 查询" 01 “课程比” 02 "课程成绩高的学生的信息及课程分数-->
+    <!--    1. 查询" 01 “课程比” 02 "课程成绩高的学生的信息及课程分数-->
     <select id="1" resultType="practice.dto.DTO1">
-        select s.* ,score1,score2 from
-        (select sid,score as score1 from sc where cid = 1) sc1
+        select s.* , score1 , score2 from
+        (select sid , score as score1 from sc where cid = 1) sc1
         left join
-        (select sid ,score as score2 from sc where cid = 2) sc2
+        (select sid , score as score2 from sc where cid = 2) sc2
         on sc1.sid = sc2.sid
         join
         student s
         on sc1.sid = s.sid
         where score1 > score2 or score2 is null;
+    </select>
+    <!--    2. 查询同时存在" 01 “课程和” 02 "课程的情况-->
+    <select id="2" resultType="">
+        select s.* , score1 , score2 from
+        (select sid , score as score1 from sc where cid = 1) sc1,
+        (select sid , score as score2 from sc where cid = 2) sc2,
+        student s
+        where sc1.sid = sc2.sid and sc2.sid = s.sid;
+    </select>
+    <!--    3.查询存在" 01 “课程但可能不存在” 02 "课程的情况(不存在时显示为 null )-->
+    <select id="3" resultType="">
+        select s.* , score1 , score2 from
+        (select sid , score as score1 from sc where cid = 1) sc1
+        left join
+        (select sid , score as score2 from sc where cid = 2) sc2
+        on sc1.sid = sc2.sid,
+        student s
+        where sc1.sid = s.sid;
+    </select>
+    <!--   4.查询不存在" 01 “课程但存在” 02 "课程的情况 -->
+    <select id="4">
+        select * from sc
+        where sid not in
+        (select sid from sc where cid = 1) and cid = 2;
+    </select>
+    <!--    查询平均成绩大于等于 60 分的同学的学生编号和学生姓名和平均成绩-->
+    <select id="5">
+        select s.* , score.avg from
+        student s ,
+        (select sid , avg(score) as avg from sc group by sid having avg > 60) score
+        where s.sid = score.sid;
+    </select>
+    <!--    查询在 SC 表存在成绩的学生信息-->
+    <select id="6">
+        select s.* from
+        student s, sc
+        where s.sid = sc.sid and score is not null
+        group by sid ;
+    </select>
+    <!--    7. 查询所有同学的学生编号、学生姓名、选课总数、所有课程的总成绩(没成绩的显示为 null )-->
+    <select id="7">
+        select s.*,
     </select>
 </mapper>
