@@ -16,7 +16,7 @@
         where score1 > score2 or score2 is null;
     </select>
     <!--    2. 查询同时存在" 01 “课程和” 02 "课程的情况-->
-    <select id="2" resultType="">
+    <select id="2">
         select s.* , score1 , score2 from
         (select sid , score as score1 from sc where cid = 1) sc1,
         (select sid , score as score2 from sc where cid = 2) sc2,
@@ -24,7 +24,7 @@
         where sc1.sid = sc2.sid and sc2.sid = s.sid;
     </select>
     <!--    3.查询存在" 01 “课程但可能不存在” 02 "课程的情况(不存在时显示为 null )-->
-    <select id="3" resultType="">
+    <select id="3">
         select s.* , score1 , score2 from
         (select sid , score as score1 from sc where cid = 1) sc1
         left join
@@ -55,6 +55,65 @@
     </select>
     <!--    7. 查询所有同学的学生编号、学生姓名、选课总数、所有课程的总成绩(没成绩的显示为 null )-->
     <select id="7">
-        select s.*,
+        select s.* , count.*from
+        (select sid , count(cid) , sum(score) from sc group by sid) count
+        right join
+        student s
+        on count.sid = s.sid;
     </select>
+    <!--    8. 查有成绩的学生信息-->
+    <select id="8">
+        select s.* from student s
+        join sc
+        on s.sid = sc.sid group by sid;
+    </select>
+    <!--    9. 查询「李」姓老师的数量-->
+    <select id="9">
+        select count(*) from teacher
+        where tname like "李%";
+    </select>
+    <!--    10. 查询学过「张三」老师授课的同学的信息-->
+    <select id="10">
+        select s.* from student s,
+        sc where
+        s.sid = sc.sid and sc.cid = (select cid from course where tid = (select tid from teacher where tname like
+        "张三"));
+    </select>
+    <!--    11. 查询没有学全所有课程的同学的信息-->
+    <select id="11">
+        select s.* , sc_count_cid.* from student s
+        left join
+        (select sid, count(cid) as count_cid from sc group by sid) sc_count_cid
+        on sc_count_cid.sid = s.sid
+        where count_cid
+        <
+        (select count(*) from course) or count_cid is null;
+    </select>
+    <!--    12. 查询至少有一门课与学号为" 01 "的同学所学相同的同学的信息-->
+    <select id="12">
+        select s.* , sc.* from student s, sc
+        where s.sid = sc.sid and cid in (select cid from sc where sid = 01)
+        group by s.sid;
+    </select>
+    <!--    13. 查询和" 01 "号的同学学习的课程完全相同的其他同学的信息-->
+    <select id="13">
+        select * from student
+        where sid in(
+        select sid from sc group by sid
+        having
+        group_concat(cid order by cid desc) =
+        (select group_concat(cid order by cid desc) c1 from sc
+        where sid = 01));
+    </select>
+    <!--    14. 查询没学过"张三"老师讲授的任一门课程的学生姓名-->
+    <select id="14">
+        select * from student where
+        sid not in
+        (select sid from sc where cid
+        in
+        (select cid from course
+        where
+        tid = (select tid from teacher where tname like "张三")));
+    </select>
+
 </mapper>
