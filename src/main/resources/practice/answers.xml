@@ -115,5 +115,13 @@
         where
         tid = (select tid from teacher where tname like "张三")));
     </select>
-
+    <!--    15. 查询两门及其以上不及格课程的同学的学号，姓名及其平均成绩-->
+    <select id="15">
+        select s.sid , s.sname ,avg_sc.avg_score from
+        student s join
+        (select sid , avg(score) avg_score from sc
+        where score < 60
+        group by sid) avg_sc
+        on s.sid = avg_sc.sid;
+    </select>
 </mapper>
